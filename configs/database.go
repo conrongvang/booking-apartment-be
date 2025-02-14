@@ -17,20 +17,20 @@ func ConnectDatabase() {
 	db, err := gorm.Open(postgres.Open(dsn), &gorm.Config{})
 
 	if err != nil {
-		log.Fatalf("❌ Không thể kết nối database: %v", err)
+		log.Fatalf("❌ Connect database failed: %v", err)
 	}
 
 	DB = db
 
-	log.Println("✅ Kết nối database thành công!")
+	log.Println("✅ Connect database success!")
 
 	var version string
 	db.Raw("SELECT version()").Scan(&version)
 	fmt.Println("📌 PostgreSQL Version:", version)
 
-	err = db.AutoMigrate(&models.User{})
+	err = db.AutoMigrate(&models.User{}, &models.Apartment{}, &models.Customer{}, &models.Booking{})
 
 	if err != nil {
-		log.Fatalf("❌ Lỗi khi migrate bảng User: %v", err)
+		log.Fatalf("❌ Migrate erorr: %v", err)
 	}
 }

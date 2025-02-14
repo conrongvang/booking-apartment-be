@@ -9,15 +9,25 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-// Inject UserService
-var userService services.UserService
-
-func InitUserController(service services.UserService) {
-	userService = service
+type UserController interface {
+	CreateUser(c *gin.Context)
+	GetUsers(c *gin.Context)
+	GetUserByID(c *gin.Context)
+	UpdateUser(c *gin.Context)
+	DeleteUser(c *gin.Context)
 }
 
-// 🟢 Tạo User (Create)
-func CreateUser(c *gin.Context) {
+type userController struct {
+	userService services.UserService
+}
+
+func NewUserController() *userController {
+	return &userController{
+		userService: services.NewUserService(),
+	}
+}
+
+func (uc *userController) CreateUser(c *gin.Context) {
 	var user models.User
 
 	if err := c.ShouldBindJSON(&user); err != nil {
@@ -25,7 +35,7 @@ func CreateUser(c *gin.Context) {
 		return
 	}
 
-	createdUser, err := userService.CreateUser(&user)
+	createdUser, err := uc.userService.CreateUser(&user)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Không thể tạo User"})
 		return
@@ -34,9 +44,8 @@ func CreateUser(c *gin.Context) {
 	c.JSON(http.StatusCreated, gin.H{"message": "User tạo thành công!", "user": createdUser})
 }
 
-// 🔵 Lấy danh sách Users (Read All)
-func GetUsers(c *gin.Context) {
-	users, err := userService.GetUsers()
+func (uc *userController) GetUsers(c *gin.Context) {
+	users, err := uc.userService.GetUsers()
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Không thể lấy danh sách Users"})
 		return
@@ -45,15 +54,14 @@ func GetUsers(c *gin.Context) {
 	c.JSON(http.StatusOK, users)
 }
 
-// 🟡 Lấy User theo ID (Read One)
-func GetUserByID(c *gin.Context) {
+func (uc *userController) GetUserByID(c *gin.Context) {
 	id, err := strconv.Atoi(c.Param("id"))
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "ID không hợp lệ"})
 		return
 	}
 
-	user, err := userService.GetUserByID(uint(id))
+	user, err := uc.userService.GetUserByID(uint(id))
 	if err != nil {
 		c.JSON(http.StatusNotFound, gin.H{"error": err.Error()})
 		return
@@ -62,8 +70,7 @@ func GetUserByID(c *gin.Context) {
 	c.JSON(http.StatusOK, user)
 }
 
-// 🟠 Cập nhật User (Update)
-func UpdateUser(c *gin.Context) {
+func (uc *userController) UpdateUser(c *gin.Context) {
 	id, err := strconv.Atoi(c.Param("id"))
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "ID không hợp lệ"})
@@ -76,7 +83,7 @@ func UpdateUser(c *gin.Context) {
 		return
 	}
 
-	updatedUser, err := userService.UpdateUser(uint(id), &user)
+	updatedUser, err := uc.userService.UpdateUser(uint(id), &user)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
@@ -85,15 +92,14 @@ func UpdateUser(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{"message": "Cập nhật thành công!", "user": updatedUser})
 }
 
-// 🔴 Xóa User (Delete)
-func DeleteUser(c *gin.Context) {
+func (uc *userController) DeleteUser(c *gin.Context) {
 	id, err := strconv.Atoi(c.Param("id"))
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "ID không hợp lệ"})
 		return
 	}
 
-	if err := userService.DeleteUser(uint(id)); err != nil {
+	if err := uc.userService.DeleteUser(uint(id)); err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}

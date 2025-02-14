@@ -14,42 +14,45 @@ type UserService interface {
 }
 
 type userService struct {
-	repo repositories.UserRepository
+	userRepo repositories.UserRepository
 }
 
-func NewUserService(repo repositories.UserRepository) UserService {
-	return &userService{repo: repo}
+func NewUserService() UserService {
+	return &userService{
+		userRepo: repositories.NewUserRepository(),
+	}
 }
 
 func (s *userService) CreateUser(user *models.User) (*models.User, error) {
-	return s.repo.Create(user)
+	return s.userRepo.Create(user)
 }
 
 func (s *userService) GetUsers() ([]models.User, error) {
-	return s.repo.FindAll()
+	return s.userRepo.FindAll()
 }
 
 func (s *userService) GetUserByID(id uint) (*models.User, error) {
-	return s.repo.FindByID(id)
+	return s.userRepo.FindByID(id)
 }
 
 func (s *userService) UpdateUser(id uint, user *models.User) (*models.User, error) {
-	existingUser, err := s.repo.FindByID(id)
+	existingUser, err := s.userRepo.FindByID(id)
 	if err != nil {
 		return nil, err
 	}
 
-	existingUser.Name = user.Name
+	existingUser.FirstName = user.FirstName
+	existingUser.LastName = user.LastName
 	existingUser.Email = user.Email
 	existingUser.Password = user.Password
 
-	return s.repo.Update(existingUser)
+	return s.userRepo.Update(existingUser)
 }
 
 func (s *userService) DeleteUser(id uint) error {
-	user, err := s.repo.FindByID(id)
+	user, err := s.userRepo.FindByID(id)
 	if err != nil {
 		return err
 	}
-	return s.repo.Delete(user)
+	return s.userRepo.Delete(user)
 }
