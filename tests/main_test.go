@@ -7,7 +7,7 @@ import (
 func TestAddOne(t *testing.T) {
 	var (
 		input  = 1
-		output = 3
+		output = 2
 	)
 
 	actual := AddOne(1)
