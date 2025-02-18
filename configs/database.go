@@ -48,6 +48,7 @@ func ConnectDatabase() {
 	db.Raw("SELECT version()").Scan(&version)
 	fmt.Println("📌 PostgreSQL Version:", version)
 
+	db.Exec(`CREATE EXTENSION IF NOT EXISTS "uuid-ossp"`)
 	err = db.AutoMigrate(&models.User{}, &models.Apartment{}, &models.Customer{}, &models.Booking{})
 
 	if err != nil {
