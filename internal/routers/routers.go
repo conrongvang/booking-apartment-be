@@ -10,6 +10,8 @@ import (
 var userService services.UserService
 
 func SetupRoutes(router *gin.Engine) {
+	router.GET("/health", services.NewHealthHandler().HealthCheck)
+
 	userGroup := router.Group("/users")
 	{
 		userGroup.POST("/", controllers.NewUserController().CreateUser)
