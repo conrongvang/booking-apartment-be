@@ -32,6 +32,7 @@ func ConnectDatabase() {
 		"host=%s user=%s password=%s dbname=%s port=%s sslmode=disable TimeZone=%s",
 		host, user, password, dbname, port, timezone,
 	)
+	fmt.Print("dsn:::", dsn)
 	db, err := gorm.Open(postgres.Open(dsn), &gorm.Config{})
 
 	if err != nil {
