@@ -59,7 +59,7 @@ jobs:
         username: ${{ secrets.EC2_USERNAME }}
         key: ${{ secrets.EC2_SSH_KEY }}
         passphrase: ${{ secrets.SSH_KEY_PASSPHRASE }}
-        source: "app"
+        source: "app,.env" # copy folder app and file .env to below target
         target: "/home/ubuntu/app"
 
     - name: Execute deployment commands
@@ -72,4 +72,5 @@ jobs:
         script: |
           sudo systemctl stop myapp
           sudo mv /home/ubuntu/app/app /usr/local/bin/
+          sudo mv /home/ubuntu/app/.env /usr/local/bin/
           sudo systemctl start myapp
