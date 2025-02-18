@@ -51,6 +51,7 @@ jobs:
         echo 'DB_PASSWORD=${{ secrets.DB_PASSWORD }}' >> .env
         echo "DB_NAME=${{ secrets.DB_NAME }}" >> .env
         echo "DB_TIMEZONE=${{ secrets.DB_TIMEZONE }}" >> .env
+        echo "DB_SSL_MODE=${{ secrets.DB_SSL_MODE }}" >> .env
 
     - name: Deploy to EC2
       uses: appleboy/scp-action@master
