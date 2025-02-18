@@ -42,6 +42,7 @@ jobs:
 
     - name: Create env file
       run: |
+        rm -f .env
         echo "GIN_MODE=release" >> .env
         echo "PORT=${{ secrets.GATEWAY_PORT }}" >> .env
         echo "DB_HOST=${{ secrets.DB_HOST }}" >> .env
