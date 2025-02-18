@@ -32,9 +32,14 @@ func (h *healthService) HealthCheck(c *gin.Context) {
 		Status:    "up",
 		Timestamp: time.Now().UTC().Format(time.RFC3339),
 		Version:   "1.0.0",
+		Services: struct {
+			Database bool `json:"database"`
+			Cache    bool `json:"cache"`
+		}{
+			Database: checkDatabaseConnection(),
+			Cache:    checkCacheConnection(),
+		},
 	}
-	health.Services.Database = checkDatabaseConnection()
-	health.Services.Cache = checkCacheConnection()
 
 	if !health.Services.Database || !health.Services.Cache {
 		health.Status = "degraded"

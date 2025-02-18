@@ -3,17 +3,35 @@ package config
 import (
 	"fmt"
 	"log"
+	"os"
 
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 
 	"booking-apartment/models"
+
+	"github.com/joho/godotenv"
 )
 
 var DB *gorm.DB
 
 func ConnectDatabase() {
-	dsn := "host=127.0.0.1 user=developer password=123456 dbname=booking-apartment port=5432 sslmode=disable TimeZone=Asia/Ho_Chi_Minh"
+	err := godotenv.Load()
+	if err != nil {
+		log.Fatalf("❌ Error loading .env file: %v", err)
+	}
+
+	host := os.Getenv("DB_HOST")
+	user := os.Getenv("DB_USER")
+	password := os.Getenv("DB_PASSWORD")
+	dbname := os.Getenv("DB_NAME")
+	port := os.Getenv("DB_PORT")
+	timezone := os.Getenv("DB_TIMEZONE")
+
+	dsn := fmt.Sprintf(
+		"host=%s user=%s password=%s dbname=%s port=%s sslmode=disable TimeZone=%s",
+		host, user, password, dbname, port, timezone,
+	)
 	db, err := gorm.Open(postgres.Open(dsn), &gorm.Config{})
 
 	if err != nil {

@@ -1,35 +1,42 @@
-# Đặt thư mục gốc của project (thường là thư mục chứa file go.mod)
 root = "."
-
-# Đường dẫn đến thư mục tạm để Air lưu trữ các file biên dịch tạm thời
 tmp_dir = "tmp"
 
-# Cấu hình build
 [build]
-  # Đường dẫn đến file biên dịch tạm thời. Air sẽ tạo một file biên dịch ở đây.
-  # Đây là nơi chứa file kết quả khi biên dịch chương trình.
-  bin = "tmp/main"
+  # Just plain old shell command. You could use `make` as well.
+  cmd = "go build -o ./tmp/main ./cmd/server/main.go"
+  # Binary file yields from `cmd`.
+  bin = "./tmp/main"
+  # Customize binary.
+  full_bin = "./tmp/main"
+  # Watch these filename extensions.
+  include_ext = ["go", "tpl", "tmpl", "html"]
+  # Ignore these filename extensions or directories.
+  exclude_dir = ["assets", "tmp", "vendor", "frontend/node_modules"]
+  # Watch these directories if you specified.
+  include_dir = []
+  # Exclude files.
+  exclude_file = []
+  # This log file places in your tmp_dir.
+  log = "air.log"
+  # It's not necessary to trigger build each time file changes if it's too frequent.
+  delay = 1000 # ms
+  # Stop running old binary when build errors occur.
+  stop_on_error = true
+  # Send Interrupt signal before killing process (windows does not support this feature)
+  send_interrupt = false
+  # Delay after sending Interrupt signal
+  kill_delay = 500 # ms
 
-  # Lệnh chạy dự án. Air sẽ sử dụng lệnh này để chạy ứng dụng mỗi khi có thay đổi.
-  # Trong trường hợp này, ứng dụng sẽ được chạy từ file `cmd/server/main.go`
-  cmd = "go run cmd/server/main.go"
+[color]
+  main = "magenta"
+  watcher = "cyan"
+  build = "yellow"
+  runner = "green"
 
-  # Các thư mục hoặc file sẽ được theo dõi để Air reload khi có sự thay đổi.
-  # "." là thư mục gốc, có nghĩa là Air sẽ theo dõi tất cả các thay đổi trong project.
-  include = ["."]
-  
-  # Các thư mục hoặc file sẽ bị loại trừ khỏi việc theo dõi.
-  # Thường là các thư mục tạm như "tmp" hay "vendor" vì chúng không cần thiết phải theo dõi.
-  exclude = ["tmp", "vendor"]
-
-  # Các flag bổ sung cho lệnh biên dịch Go (nếu cần).
-  # Trong trường hợp này, nó chỉ định tag `dev`, thường dùng cho các cấu hình đặc biệt.
-  flags = ["-tags=dev"]
-
-# Cấu hình log
 [log]
-  # Thêm timestamp vào log để dễ dàng theo dõi thời gian xảy ra sự kiện.
   time = true
+  color = true
 
-  # Chỉnh màu sắc của log. Bạn có thể tùy chọn màu sắc cho dễ nhìn.
-  color = "cyan"
+[misc]
+  # Delete tmp directory on exit
+  clean_on_exit = true
