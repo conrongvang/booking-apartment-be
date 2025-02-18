@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"log"
 	"os"
 
@@ -23,6 +24,6 @@ func main() {
 
 	router := gin.Default()
 	routers.SetupRoutes(router)
-
 	router.Run(":" + port)
+	fmt.Print("port:::", port)
 }
