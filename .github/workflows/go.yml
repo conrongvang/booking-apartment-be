@@ -70,6 +70,7 @@ jobs:
         passphrase: ${{ secrets.SSH_KEY_PASSPHRASE }}
         script: |
           sudo systemctl stop myapp
+          sudo mv /usr/local/bin/.env /usr/local/bin/.env.backup
           sudo mv /home/ubuntu/app/app /usr/local/bin/
           sudo mv /home/ubuntu/app/.env /usr/local/bin/
           sudo systemctl start myapp
