@@ -24,13 +24,14 @@ func ConnectDatabase() {
 	host := os.Getenv("DB_HOST")
 	user := os.Getenv("DB_USER")
 	password := os.Getenv("DB_PASSWORD")
+	ssqlmode := os.Getenv("DB_SSL_MODE")
 	dbname := os.Getenv("DB_NAME")
 	port := os.Getenv("DB_PORT")
 	timezone := os.Getenv("DB_TIMEZONE")
 
 	dsn := fmt.Sprintf(
-		"host=%s user=%s password=%s dbname=%s port=%s sslmode=disable TimeZone=%s",
-		host, user, password, dbname, port, timezone,
+		"host=%s user=%s password=%s dbname=%s port=%s sslmode=%s TimeZone=%s",
+		host, user, password, dbname, port, ssqlmode, timezone,
 	)
 	fmt.Print("dsn:::", dsn)
 	db, err := gorm.Open(postgres.Open(dsn), &gorm.Config{})
